@@ -62,6 +62,7 @@ def add(x: List[int]) -> int:
     return 0 if x is None else x.head + add(x.tail)
 
 
+
 def contains(x: List[T], e: T) -> bool:
     """
     Tell us if e is in x.
@@ -72,6 +73,21 @@ def contains(x: List[T], e: T) -> bool:
     True
     """
     ...
+    while True: 
+        if e == x.head: 
+            return True 
+        elif x.tail != None:
+            return contains(x.tail, e)
+        else:
+            return False
+
+
+
+#print(contains(L(1, L(2, L(3, None))), 2))
+#print(contains(L(1, L(2, L(3, None))), 4))
+
+
+
 
 
 def drop(x: List[T], k: int) -> List[T]:
@@ -86,7 +102,16 @@ def drop(x: List[T], k: int) -> List[T]:
     >>> drop(x, 3)
     L(4, None)
     """
-    ...
+    
+    while True: 
+        if k == 0: 
+            return x
+        else:
+            return drop(x.tail, k-1)
+
+#print(drop(L(1, L(2, L(3, L(4, None)))), 0))
+#print(drop(L(1, L(2, L(3, L(4, None)))), 1))
+#print(drop(L(1, L(2, L(3, L(4, None)))), 3))
 
 
 def keep(x: List[T], k: int) -> List[T]:
@@ -100,7 +125,18 @@ def keep(x: List[T], k: int) -> List[T]:
     >>> keep(x, 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    
+    if k <= length(x):
+        if k == 0: 
+            return None
+        else: 
+            return L(x.head,keep(x.tail, k-1)) 
+
+
+#print(keep(L(1, L(2, L(3, L(4, None)))), 1))
+#print(keep(L(1, L(2, L(3, L(4, None)))), 3))
+
+
 
 
 def concat(x: List[T], y: List[T]) -> List[T]:
@@ -110,7 +146,16 @@ def concat(x: List[T], y: List[T]) -> List[T]:
     >>> concat(L(1, L(2, None)), L(3, L(4, None)))
     L(1, L(2, L(3, L(4, None))))
     """
-    ...
+
+    if x == None:
+        return y 
+    if x.tail == None: 
+        return L(x.head, y)
+    else:
+        return L(x.head, concat(x.tail, y))
+        
+#print(concat(L(1, L(2, None)), L(3, L(4, None))))
+
 
 
 def append(x: List[T], e: T) -> List[T]:
@@ -120,7 +165,17 @@ def append(x: List[T], e: T) -> List[T]:
     >>> append(L(1, L(2, None)), 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    k = length(x)
+
+    if x == None: 
+        return L(e, None) 
+    if x.tail == None:
+        return L(x.head, L(e, None))
+    else: 
+        return L(x.head,append(x.tail, e)) 
+
+#print(append(L(1, L(2, None)), 3))
+
 
 
 def rev(x: List[T]) -> List[T]:
@@ -131,6 +186,16 @@ def rev(x: List[T]) -> List[T]:
     L(3, L(2, L(1, None)))
     """
     ...
+
+    #if x.tail == None: 
+    #    return x.head
+    #else: 
+    #    return L(rev(x.tail), L(x.head, None))
+
+
+#print(rev(L(1, L(2, L(3, None)))))
+
+
 
 
 # Tail-recursive versions ###########################################
@@ -164,7 +229,7 @@ def add_tr(x: List[int], acc: int = 0) -> int:
     return acc if x is None else add_tr(x.tail, acc + x.head)
 
 
-def contains_tr(x: List[T], e: T) -> bool:
+def contains_tr(x: List[T], e: T, acc: str = False) -> bool:
     """
     Tell us if e is in x.
 
@@ -173,10 +238,22 @@ def contains_tr(x: List[T], e: T) -> bool:
     >>> contains_tr(L(1, L(2, L(3, None))), 2)
     True
     """
-    ...
+    if acc == False: 
+        if e == x.head: 
+            acc = True
+            return acc
+        elif x.tail != None:
+            return contains_tr(x.tail, e, acc)
+        else:
+            return False
+    else: 
+        return acc
+
+#print(contains_tr(L(1, L(2, L(3, None))), 4))
+#print(contains_tr(L(1, L(2, L(3, None))), 2))
 
 
-def drop_tr(x: List[T], k: int) -> List[T]:
+def drop_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
     """
     Remove the first k elements.
 
@@ -188,10 +265,21 @@ def drop_tr(x: List[T], k: int) -> List[T]:
     >>> drop_tr(x, 3)
     L(4, None)
     """
-    ...
+    
+    while True: 
+        if acc == k: 
+            return x
+        else:
+            acc += 1 
+            return drop_tr(x.tail, k, acc)
+
+#print(drop_tr(L(1, L(2, L(3, L(4, None)))), 0))
+#print(drop_tr(L(1, L(2, L(3, L(4, None)))), 1))
+#print(drop_tr(L(1, L(2, L(3, L(4, None)))), 3))
 
 
-def keep_tr(x: List[T], k: int) -> List[T]:
+
+def keep_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
     """
     Keep only the first k elements.
 
@@ -202,7 +290,16 @@ def keep_tr(x: List[T], k: int) -> List[T]:
     >>> keep_tr(x, 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    if acc < k:
+        if k == 0: 
+            return None
+        else: 
+            acc += 1 
+            return L(x.head,keep_tr(x.tail, k, acc)) 
+
+
+#print(keep_tr(L(1, L(2, L(3, L(4, None)))), 1))
+#print(keep_tr(L(1, L(2, L(3, L(4, None)))), 3))
 
 
 def concat_tr(x: List[T], y: List[T]) -> List[T]:
@@ -282,7 +379,14 @@ def contains_loop(x: List[T], e: T) -> bool:
     >>> contains_loop(L(1, L(2, L(3, None))), 2)
     True
     """
-    ...
+    
+    while x:
+        if e == x.head:
+            return True
+        else: 
+            x = x.tail
+    else: 
+        return False 
 
 
 def drop_loop(x: List[T], k: int) -> List[T]:
@@ -297,10 +401,18 @@ def drop_loop(x: List[T], k: int) -> List[T]:
     >>> drop_loop(x, 3)
     L(4, None)
     """
-    ...
+    
+    while x: 
+        if k == 0:
+            return x 
+        else: 
+            x = x.tail
+            k -= 1 
+
+#print(drop_loop(L(1, L(2, L(3, L(4, None)))), 3)) 
 
 
-def keep_loop(x: List[T], k: int) -> List[T]:
+def keep_loop(x: List[T], k: int, acc: int = 0) -> List[T]:
     """
     Keep only the first k elements.
 
@@ -311,7 +423,21 @@ def keep_loop(x: List[T], k: int) -> List[T]:
     >>> keep_loop(x, 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    
+    while x:
+        if acc < k:
+            if k == 0: 
+                return None
+            else: 
+                acc += 1 
+                x = L(x.head, x.tail)
+        if acc == k:
+            return x 
+
+
+#print(keep_loop(L(1, L(2, L(3, L(4, None)))), 3))
+#print(keep_loop(L(1, L(2, L(3, L(4, None)))), 3))
+
 
 
 def concat_loop(x: List[T], y: List[T]) -> List[T]:
@@ -321,7 +447,9 @@ def concat_loop(x: List[T], y: List[T]) -> List[T]:
     >>> concat_loop(L(1, L(2, None)), L(3, L(4, None)))
     L(1, L(2, L(3, L(4, None))))
     """
-    ...
+
+        
+#print(concat_loop(L(1, L(2, None)), L(3, L(4, None))))
 
 
 def append_loop(x: List[T], e: T) -> List[T]:
