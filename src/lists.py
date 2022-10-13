@@ -73,13 +73,13 @@ def contains(x: List[T], e: T) -> bool:
     True
     """
     ...
-    while True: 
-        if e == x.head: 
-            return True 
-        elif x.tail != None:
-            return contains(x.tail, e)
-        else:
-            return False
+    
+    if e == x.head: 
+        return True 
+    elif x.tail != None:
+        return contains(x.tail, e)
+    else:
+        return False
 
 
 
@@ -126,7 +126,7 @@ def keep(x: List[T], k: int) -> List[T]:
     L(1, L(2, L(3, None)))
     """
     
-    if k <= length(x):
+    if k != None:
         if k == 0: 
             return None
         else: 
@@ -149,8 +149,6 @@ def concat(x: List[T], y: List[T]) -> List[T]:
 
     if x == None:
         return y 
-    if x.tail == None: 
-        return L(x.head, y)
     else:
         return L(x.head, concat(x.tail, y))
         
@@ -169,8 +167,6 @@ def append(x: List[T], e: T) -> List[T]:
 
     if x == None: 
         return L(e, None) 
-    if x.tail == None:
-        return L(x.head, L(e, None))
     else: 
         return L(x.head,append(x.tail, e)) 
 
@@ -229,7 +225,7 @@ def add_tr(x: List[int], acc: int = 0) -> int:
     return acc if x is None else add_tr(x.tail, acc + x.head)
 
 
-def contains_tr(x: List[T], e: T, acc: str = False) -> bool:
+def contains_tr(x: List[T], e: T) -> bool:
     """
     Tell us if e is in x.
 
@@ -238,22 +234,20 @@ def contains_tr(x: List[T], e: T, acc: str = False) -> bool:
     >>> contains_tr(L(1, L(2, L(3, None))), 2)
     True
     """
-    if acc == False: 
-        if e == x.head: 
-            acc = True
-            return acc
-        elif x.tail != None:
-            return contains_tr(x.tail, e, acc)
-        else:
-            return False
-    else: 
-        return acc
+  
+    if e == x.head: 
+        return True
+    elif x.tail != None:
+        return contains_tr(x.tail, e)
+    else:
+        return False
+
 
 #print(contains_tr(L(1, L(2, L(3, None))), 4))
 #print(contains_tr(L(1, L(2, L(3, None))), 2))
 
 
-def drop_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
+def drop_tr(x: List[T], k: int) -> List[T]:
     """
     Remove the first k elements.
 
@@ -267,11 +261,10 @@ def drop_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
     """
     
     while True: 
-        if acc == k: 
+        if k == 0: 
             return x
         else:
-            acc += 1 
-            return drop_tr(x.tail, k, acc)
+            return drop_tr(x.tail, k-1)
 
 #print(drop_tr(L(1, L(2, L(3, L(4, None)))), 0))
 #print(drop_tr(L(1, L(2, L(3, L(4, None)))), 1))
@@ -290,12 +283,12 @@ def keep_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
     >>> keep_tr(x, 3)
     L(1, L(2, L(3, None)))
     """
-    if acc < k:
+    if k != None:
         if k == 0: 
             return None
         else: 
-            acc += 1 
-            return L(x.head,keep_tr(x.tail, k, acc)) 
+            acc +=1
+            return L(x.head, keep_tr(x.tail, k-1, acc)) 
 
 
 #print(keep_tr(L(1, L(2, L(3, L(4, None)))), 1))
