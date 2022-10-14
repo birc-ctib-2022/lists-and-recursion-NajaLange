@@ -1,6 +1,7 @@
 """Linked lists."""
 
 from __future__ import annotations
+from os import access
 from typing import TypeVar, Generic, Optional
 from dataclasses import dataclass
 
@@ -62,7 +63,6 @@ def add(x: List[int]) -> int:
     return 0 if x is None else x.head + add(x.tail)
 
 
-
 def contains(x: List[T], e: T) -> bool:
     """
     Tell us if e is in x.
@@ -73,14 +73,14 @@ def contains(x: List[T], e: T) -> bool:
     True
     """
     ...
-    
+    if x == None: 
+        return False 
     if e == x.head: 
         return True 
     elif x.tail != None:
         return contains(x.tail, e)
     else:
         return False
-
 
 
 #print(contains(L(1, L(2, L(3, None))), 2))
@@ -102,12 +102,12 @@ def drop(x: List[T], k: int) -> List[T]:
     >>> drop(x, 3)
     L(4, None)
     """
-    
-    while True: 
-        if k == 0: 
-            return x
-        else:
-            return drop(x.tail, k-1)
+    if x == None: 
+        return x 
+    if k == 0: 
+        return x
+    else:
+        return drop(x.tail, k-1)
 
 #print(drop(L(1, L(2, L(3, L(4, None)))), 0))
 #print(drop(L(1, L(2, L(3, L(4, None)))), 1))
@@ -125,12 +125,12 @@ def keep(x: List[T], k: int) -> List[T]:
     >>> keep(x, 3)
     L(1, L(2, L(3, None)))
     """
-    
-    if k != None:
-        if k == 0: 
-            return None
-        else: 
-            return L(x.head,keep(x.tail, k-1)) 
+    if x == None:
+        return None
+    if k == 0: 
+        return None
+    else: 
+        return L(x.head,keep(x.tail, k-1)) 
 
 
 #print(keep(L(1, L(2, L(3, L(4, None)))), 1))
@@ -183,10 +183,9 @@ def rev(x: List[T]) -> List[T]:
     """
     ...
 
-    #if x.tail == None: 
-    #    return x.head
-    #else: 
-    #    return L(rev(x.tail), L(x.head, None))
+    if x == None:
+        return None
+    return append(rev(x.tail), x.head)
 
 
 #print(rev(L(1, L(2, L(3, None)))))
@@ -234,13 +233,12 @@ def contains_tr(x: List[T], e: T) -> bool:
     >>> contains_tr(L(1, L(2, L(3, None))), 2)
     True
     """
-  
+    
+    if x == None: 
+        return False 
     if e == x.head: 
         return True
-    elif x.tail != None:
-        return contains_tr(x.tail, e)
-    else:
-        return False
+    return contains_tr(x.tail, e)
 
 
 #print(contains_tr(L(1, L(2, L(3, None))), 4))
@@ -260,11 +258,10 @@ def drop_tr(x: List[T], k: int) -> List[T]:
     L(4, None)
     """
     
-    while True: 
-        if k == 0: 
-            return x
-        else:
-            return drop_tr(x.tail, k-1)
+    if k == 0: 
+        return x
+    else:
+        return drop_tr(x.tail, k-1)
 
 #print(drop_tr(L(1, L(2, L(3, L(4, None)))), 0))
 #print(drop_tr(L(1, L(2, L(3, L(4, None)))), 1))
@@ -272,7 +269,7 @@ def drop_tr(x: List[T], k: int) -> List[T]:
 
 
 
-def keep_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
+def keep_tr(x: List[T], k: int, acc: List[T] = None) -> List[T]:
     """
     Keep only the first k elements.
 
@@ -283,16 +280,28 @@ def keep_tr(x: List[T], k: int, acc: int = 0) -> List[T]:
     >>> keep_tr(x, 3)
     L(1, L(2, L(3, None)))
     """
+    if x == None:
+        return rev(acc)
     if k != None:
         if k == 0: 
-            return None
+            return rev(acc)
         else: 
-            acc +=1
-            return L(x.head, keep_tr(x.tail, k-1, acc)) 
+            return keep_tr(x.tail, k-1, L(x.head, acc)) 
 
 
 #print(keep_tr(L(1, L(2, L(3, L(4, None)))), 1))
 #print(keep_tr(L(1, L(2, L(3, L(4, None)))), 3))
+
+
+def flip(x: List[T], y: List[T]) -> List[T]:
+
+    if y == None:
+        return x 
+    return flip(L(y.head, x), y.tail)
+
+#print(flip(L(3, L(4, None)), L(2, L(1, L(0, None)))))
+
+
 
 
 def concat_tr(x: List[T], y: List[T]) -> List[T]:
@@ -302,7 +311,9 @@ def concat_tr(x: List[T], y: List[T]) -> List[T]:
     >>> concat_tr(L(1, L(2, None)), L(3, L(4, None)))
     L(1, L(2, L(3, L(4, None))))
     """
-    ...
+    return flip(y, rev(x))
+
+#print(concat_tr(L(1, L(2, None)), L(3, L(4, None))))
 
 
 def append_tr(x: List[T], e: T) -> List[T]:
@@ -312,17 +323,23 @@ def append_tr(x: List[T], e: T) -> List[T]:
     >>> append_tr(L(1, L(2, None)), 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    return concat_tr(x, L(e, None))
 
+#print(append_tr(L(1, L(2, None)), 3))
 
-def rev_tr(x: List[T]) -> List[T]:
+def rev_tr(x: List[T], acc: List[T]=None) -> List[T]:
     """
     Reverse a list.
 
     >>> rev_tr(L(1, L(2, L(3, None))))
     L(3, L(2, L(1, None)))
     """
-    ...
+    if x == None:
+        return acc
+    return rev_tr(x.tail, L(x.head, acc))
+
+#print(rev_tr(L(1, L(2, L(3, None)))))
+
 
 
 # Loop versions ###########################################
@@ -405,7 +422,7 @@ def drop_loop(x: List[T], k: int) -> List[T]:
 #print(drop_loop(L(1, L(2, L(3, L(4, None)))), 3)) 
 
 
-def keep_loop(x: List[T], k: int, acc: int = 0) -> List[T]:
+def keep_loop(x: List[T], k: int, acc: List[T] = None) -> List[T]:
     """
     Keep only the first k elements.
 
@@ -416,22 +433,26 @@ def keep_loop(x: List[T], k: int, acc: int = 0) -> List[T]:
     >>> keep_loop(x, 3)
     L(1, L(2, L(3, None)))
     """
+    while True: 
+        if x == None:
+            return acc
+        if k == 0: 
+            return acc
+        x, k, acc = x.tail, k-1, L(x.head, acc)
     
-    while x:
-        if acc < k:
-            if k == 0: 
-                return None
-            else: 
-                acc += 1 
-                x = L(x.head, x.tail)
-        if acc == k:
-            return x 
 
-
-#print(keep_loop(L(1, L(2, L(3, L(4, None)))), 3))
+#print(keep_loop(L(1, L(2, L(3, L(4, None)))), 1))
 #print(keep_loop(L(1, L(2, L(3, L(4, None)))), 3))
 
 
+def flip_loop(x: List[T], y: List[T]) -> List[T]:
+    
+    while True: 
+        if y == None: 
+            return x
+        x, y = L(y.head, x), y.tail
+
+#print(flip_loop(L(3, L(4, None)), L(2, L(1, L(0, None)))))
 
 def concat_loop(x: List[T], y: List[T]) -> List[T]:
     """
@@ -440,8 +461,8 @@ def concat_loop(x: List[T], y: List[T]) -> List[T]:
     >>> concat_loop(L(1, L(2, None)), L(3, L(4, None)))
     L(1, L(2, L(3, L(4, None))))
     """
+    return flip_loop(y,rev(x))
 
-        
 #print(concat_loop(L(1, L(2, None)), L(3, L(4, None))))
 
 
@@ -452,8 +473,9 @@ def append_loop(x: List[T], e: T) -> List[T]:
     >>> append_loop(L(1, L(2, None)), 3)
     L(1, L(2, L(3, None)))
     """
-    ...
+    return concat_loop(x, L(e, None))
 
+#print(append_loop(L(1, L(2, None)), 3))
 
 def rev_loop(x: List[T]) -> List[T]:
     """
@@ -462,4 +484,6 @@ def rev_loop(x: List[T]) -> List[T]:
     >>> rev_loop(L(1, L(2, L(3, None))))
     L(3, L(2, L(1, None)))
     """
-    ...
+    return flip_loop(None, x)
+
+#print(rev_loop(L(1, L(2, L(3, None)))))
