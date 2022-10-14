@@ -435,14 +435,14 @@ def keep_loop(x: List[T], k: int, acc: List[T] = None) -> List[T]:
     """
     while True: 
         if x == None:
-            return acc
+            return rev_tr(acc)
         if k == 0: 
-            return acc
+            return rev_tr(acc)
         x, k, acc = x.tail, k-1, L(x.head, acc)
     
 
-#print(keep_loop(L(1, L(2, L(3, L(4, None)))), 1))
-#print(keep_loop(L(1, L(2, L(3, L(4, None)))), 3))
+print(keep_loop(L(1, L(2, L(3, L(4, None)))), 1))
+print(keep_loop(L(1, L(2, L(3, L(4, None)))), 3))
 
 
 def flip_loop(x: List[T], y: List[T]) -> List[T]:
